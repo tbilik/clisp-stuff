@@ -1,0 +1,16 @@
+(defun yprime (x y)
+  (+ (* x x) y y 5))
+
+(defun rungekutta (x y h xfin)
+  (let* ((k1 (yprime (car x) (car y)))
+         (k2 (yprime (+ (car x) (/ h 2)) (+ (car y) (* k1 h 0.5))))
+         (k3 (yprime (+ (car x) (/ h 2)) (+ (car y) (* k2 h 0.5))))
+         (k4 (yprime (+ (car x) h) (+ (car y) (* k3 h))))
+         (slope (/ (+ k1 k2 k2 k3 k3 k4) 6)))
+    (princ (car y))
+    (terpri)
+    (if (>= (car x) xfin)
+        `(,(reverse x) ,(reverse y))
+      (rungekutta (cons (+ (car x) h) x) (cons (+ (car y) (* slope h)) y) h xfin))))
+
+(rungekutta '(0) '(2) 0.05 1)

@@ -19,6 +19,7 @@
   (finish-output)
   (read))
 
+;; Prompt user for the y prime function, initial values, and step. Runs rungekutta function
 (defun rk-value-read ()
   (let (
         (yprime (eval `(lambda (x y) ,(prompt "Enter function of y prime: "))))
@@ -28,6 +29,7 @@
         (step (prompt "Enter step value: ")))
     (rungekutta (list x0) (list y0) step xfin yprime)))
 
+;; Format RK data nicely
 (defun rk-value-output (rk-values)
   (if (equal rk-values '(() ()))
       nil

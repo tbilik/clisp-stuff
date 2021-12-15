@@ -14,6 +14,9 @@
   (finish-output)
   (mapcar #'digit-char-p (coerce (read-line) 'list)))
 
-(let ((the-luhn-sum (luhn-sum (read-credit-card ))
+(let ((the-luhn-sum (luhn-sum (read-credit-card))))
 (princ "The luhn sum of your credit card number is: ")
-(princ (luhn-sum (read-credit-card)))
+(princ the-luhn-sum)
+(terpri)
+(princ (if (equal (mod the-luhn-sum 10) 0) "This is a valid credit card." "This is an invalid credit card."))
+(terpri))

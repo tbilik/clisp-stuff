@@ -12,7 +12,7 @@
 (defun read-credit-card ()
   (princ "Enter your credit card number: ")
   (finish-output)
-  (mapcar #'digit-char-p (coerce (read-line) 'list)))
+  (map 'list #'digit-char-p (read-line)))
 
 (let ((the-luhn-sum (luhn-sum (read-credit-card))))
 (princ "The luhn sum of your credit card number is: ")

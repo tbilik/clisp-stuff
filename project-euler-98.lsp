@@ -21,15 +21,15 @@
          word square-str)
     the-alist))
 
-(defun is-square-anagram (word-pair)
-  (let ((word-length (length (car word-pair))))
+(defun square-anagram (word-pair)
+  (let ((word-length (length (car word-pair))) (max-num 0))
     (dolist (perfect-square (elt *perfect-squares* word-length))
       (let ((char-replacement-alist (generate-alist (car word-pair) perfect-square)))
         (when char-replacement-alist
           (let ((generated-number (map 'string (lambda (x) (cdr (assoc x char-replacement-alist))) (cdr word-pair))))
             (when (find generated-number (elt *perfect-squares* word-length) :test #'string=)
-              (return-from is-square-anagram
-                (if (> (parse-integer perfect-square) (parse-integer generated-number)) perfect-square generated-number)))))))) nil)
+              (setf max-num (max max-num (parse-integer perfect-square) (parse-integer generated-number))))))))
+    max-num))
 
 (defun is-anagram (x y)
   (let ((lookup (make-array 256 :initial-element 0 :element-type '(signed-byte 8))))
@@ -39,9 +39,9 @@
 
 (defun anagrams-in-list (str sorted-dictionary)
   (when (and sorted-dictionary (equal (length str) (length (car sorted-dictionary))))
-        (when (is-anagram str (car sorted-dictionary))
-          (push (cons str (car sorted-dictionary)) *anagrams*))
-        (anagrams-in-list str (cdr sorted-dictionary))))
+    (when (is-anagram str (car sorted-dictionary))
+      (push (cons str (car sorted-dictionary)) *anagrams*))
+    (anagrams-in-list str (cdr sorted-dictionary))))
 
 (defun find-anagrams (sorted-dictionary)
   (when sorted-dictionary
@@ -64,9 +64,7 @@
   (let
       ((max-value 0))
     (dolist (word-pair *anagrams*)
-      (let ((current-value (is-square-anagram word-pair)))
-        (when current-value
-          (when (> (parse-integer current-value) max-value) (setf max-value (parse-integer current-value))))))
+      (setf max-value (max max-value (square-anagram word-pair))))
     max-value))
 
 (princ (find-largest-square))

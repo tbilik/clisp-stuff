@@ -1,0 +1,7 @@
+(let ((sum 0) (i 3))
+  (loop while (< i 1000) do (setf sum (+ sum i) i (+ i 3)))
+  (setf i 5)
+  (loop while (< i 1000) do (setf sum (+ sum i) i (+ i 5)))
+  (setf i 15)
+  (loop while (< i 1000) do (setf sum (- sum i) i (+ i 15)))
+  (princ sum))

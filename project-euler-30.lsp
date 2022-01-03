@@ -1,7 +1,10 @@
+(defparameter *lookup* (make-array 10 :element-type '(unsigned-byte 32)))
+(dotimes (i 10) (setf (elt *lookup* i) (expt i 5)))
+
 (defun digit-fifth-power (x)
   (if (equal x 0) 0
       (multiple-value-bind (quotient remainder)
-          (floor x 10) (+ (expt remainder 5) (digit-fifth-power quotient)))))
+          (floor x 10) (+ (elt *lookup* remainder) (digit-fifth-power quotient)))))
 
 (let
     ((sum 0))

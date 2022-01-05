@@ -14,6 +14,8 @@
          (when leg2 (return-from form-pythagorean-triple (cons leg1 leg2)))
          (setf leg1 (+ leg1 2))))) nil)
 
+;; test hypotenuses until a pythagorean triple is found where the
+;; perimeter is a factor of 1000
 (loop
   with hypotenuse = 5
   for legs = (form-pythagorean-triple hypotenuse)

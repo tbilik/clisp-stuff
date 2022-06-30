@@ -1,12 +1,3 @@
-(defparameter *knight-order* '((1 . -2)
-                              (2 . -1)
-                              (2 . 1)
-                              (1 . 2)
-                              (-1 . 2)
-                              (-2 . 1)
-                              (-2 . -1)
-                              (-1 . -2)))
-
 (defun create-board (n)
   "creates the board with proper initial values"
   (when (>= n 4)
@@ -21,18 +12,21 @@
 (defun generate-solution (board x y cells)
   "generates a solution to the knights tour"
   (if (equal (aref board y x) cells) t ;; base case
-      (dolist (move *knight-order*) ;; iterate through moves
-        ;; try new coordinate
-        (let ((x (+ x (car move)))
-              (y (+ y (cdr move)))
-              (value (1+ (aref board y x))))
-          ;; when the new coordinate is zero, attempt to generate
-          ;; a solution from that point
-          (when (zerop (aref board y x))
-            (setf (aref board y x) value)
-            (when (generate-solution board x y cells)
-              (return t))
-            (setf (aref board y x) 0))))))
+      ;; using lambda thing since Roger hates lambdas
+      (map nil (lambda (move-x move-y) ;; iterate through moves
+                 ;; try new coordinate
+                 (let ((x (+ x move-x))
+                       (y (+ y move-y))
+                       (value (1+ (aref board y x))))
+                   ;; when the new coordinate is zero, attempt to generate
+                   ;; a solution from that point
+                   (when (zerop (aref board y x))
+                     (setf (aref board y x) value)
+                     (when (generate-solution board x y cells)
+                       (return-from generate-solution t))
+                     (setf (aref board y x) 0))))
+           '(1 2 2 1 -1 -2 -2 -1) ;; x moves
+            '(-2 -1 1 2 2 1 -1 -2)))) ;; y moves
     
 (let
     ((board (create-board 9)))

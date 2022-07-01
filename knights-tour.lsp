@@ -10,26 +10,26 @@
       array)))
 
 (defun generate-solution (board x y cells)
-  "generates a solution to the knights tour"
-  (if (equal (aref board y x) cells) t ;; base case
-      ;; using lambda thing since Roger hates lambdas
-      (map nil (lambda (move-x move-y) ;; iterate through moves
-                 ;; try new coordinate
-                 (let ((x (+ x move-x))
-                       (y (+ y move-y))
-                       (value (1+ (aref board y x))))
-                   ;; when the new coordinate is zero, attempt to generate
-                   ;; a solution from that point
-                   (when (zerop (aref board y x))
-                     (setf (aref board y x) value)
-                     (when (generate-solution board x y cells)
-                       (return-from generate-solution t))
-                     (setf (aref board y x) 0))))
-           '(1 2 2 1 -1 -2 -2 -1) ;; x moves
-            '(-2 -1 1 2 2 1 -1 -2)))) ;; y moves
+  (let ((value (aref board y x))) ;; value of current cell
+    (if (equal value cells) t ;; base case
+        (do ((move-x '(1 2 2 1 -1 -2 -2 -1) (cdr move-x)) ;; x moves
+             (move-y '(-2 -1 1 2 2 1 -1 -2) (cdr move-y))) ;; y moves
+            ((or (null move-x) ;; check if there are any moves left
+                 (let ((x (+ x (car move-x))) ;; update x
+                       (y (+ y (car move-y)))) ;; update y
+                   (when (zerop (aref board y x)) ;; check if new cell is zero
+                     ;; place value of new cell
+                     (setf (aref board y x) (1+ value))
+                     ;; attempt to generate solution from new cell.
+                     ;; if the attempt fails, put zero back in the cell.
+                     (if (generate-solution board x y cells)
+                         t
+                         (progn (setf (aref board y x) 0) nil)))))
+             (and move-x t))))))
+                            
     
 (let
     ((board (create-board 9)))
   (setf (aref board 2 2) 1)
-  (generate-solution board 2 2 25)
+  (princ (generate-solution-2 board 2 2 25))
   (princ board))
